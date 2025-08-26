@@ -260,6 +260,8 @@ class FormService {
 
   // Default sample forms for first-time users
   private getDefaultForms(): InspectionForm[] {
+    // Clear any existing forms from localStorage on initialization
+    localStorage.removeItem(this.STORAGE_KEY);
     return [];
   }
 }
