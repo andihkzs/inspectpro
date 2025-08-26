@@ -29,5 +29,12 @@ export const supabase = isValidSupabaseUrl && isValidSupabaseKey
 
 // Check if Supabase is configured
 export const isSupabaseConfigured = (): boolean => {
-  return supabase !== null;
+  const configured = supabase !== null;
+  console.log('🔗 Supabase Configuration Check:');
+  console.log('  - URL valid:', isValidSupabaseUrl);
+  console.log('  - Key valid:', isValidSupabaseKey);
+  console.log('  - Overall configured:', configured);
+  console.log('  - Supabase URL:', supabaseUrl ? supabaseUrl.slice(0, 20) + '...' : 'not set');
+  console.log('  - Supabase Key:', supabaseAnonKey ? supabaseAnonKey.slice(0, 20) + '...' : 'not set');
+  return configured;
 };

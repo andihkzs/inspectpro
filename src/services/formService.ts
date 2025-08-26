@@ -15,9 +15,14 @@ class FormService {
    * Get all forms for the current user
    */
   async getAllForms(): Promise<InspectionForm[]> {
+    console.log('📋 FormService: Getting all forms...');
+    console.log('📋 FormService: Supabase configured:', isSupabaseConfigured());
+    
     if (isSupabaseConfigured()) {
+      console.log('📋 FormService: Using Supabase');
       return this.getFormsFromSupabase();
     }
+    console.log('📋 FormService: Using localStorage fallback');
     return this.getFormsFromLocalStorage();
   }
 
@@ -25,6 +30,9 @@ class FormService {
    * Create a new form
    */
   async createForm(formData: Omit<InspectionForm, 'id' | 'createdAt' | 'updatedAt'>): Promise<InspectionForm> {
+    console.log('📝 FormService: Creating form, data:', formData);
+    console.log('📝 FormService: Supabase configured:', isSupabaseConfigured());
+    
     const form: InspectionForm = {
       ...formData,
       id: uuidv4(),
@@ -32,9 +40,13 @@ class FormService {
       updatedAt: new Date()
     };
 
+    console.log('📝 FormService: Form with generated ID:', form);
+
     if (isSupabaseConfigured()) {
+      console.log('📝 FormService: Saving to Supabase');
       return this.createFormInSupabase(form);
     }
+    console.log('📝 FormService: Saving to localStorage');
     return this.createFormInLocalStorage(form);
   }
 
@@ -77,25 +89,35 @@ class FormService {
   // Supabase operations
   private async getFormsFromSupabase(): Promise<InspectionForm[]> {
     try {
+      console.log('📊 Supabase: Fetching forms from database...');
       const { data, error } = await supabase!
         .from('inspection_forms')
         .select('*')
         .eq('created_by', this.DEFAULT_USER_ID)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('📊 Supabase: Error fetching forms:', error);
+        throw error;
+      }
 
-      return data.map(this.transformFromDatabase);
+      console.log('📊 Supabase: Raw data from database:', data);
+      const transformedForms = data.map(this.transformFromDatabase);
+      console.log('📊 Supabase: Transformed forms:', transformedForms);
+      return transformedForms;
     } catch (error) {
       console.error('Error fetching forms from Supabase:', error);
       // Fallback to localStorage
+      console.log('📊 Supabase: Falling back to localStorage');
       return this.getFormsFromLocalStorage();
     }
   }
 
   private async createFormInSupabase(form: InspectionForm): Promise<InspectionForm> {
     try {
+      console.log('💾 Supabase: Creating form in database:', form);
       const dbForm = this.transformToDatabase(form);
+      console.log('💾 Supabase: Transformed form for database:', dbForm);
       
       const { data, error } = await supabase!
         .from('inspection_forms')
@@ -103,12 +125,17 @@ class FormService {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('💾 Supabase: Error creating form:', error);
+        throw error;
+      }
 
+      console.log('💾 Supabase: Form created successfully:', data);
       return this.transformFromDatabase(data);
     } catch (error) {
       console.error('Error creating form in Supabase:', error);
       // Fallback to localStorage
+      console.log('💾 Supabase: Falling back to localStorage');
       return this.createFormInLocalStorage(form);
     }
   }
