@@ -108,6 +108,15 @@ export const useFormBuilder = () => {
     }));
   }, [form]);
 
+  const deleteSection = useCallback((sectionId: string) => {
+    if (!form) return;
+
+    setForm(prev => ({
+      ...prev!,
+      sections: prev!.sections.filter(section => section.id !== sectionId),
+      updatedAt: new Date()
+    }));
+  }, [form]);
   const reorderFields = useCallback((sectionId: string, startIndex: number, endIndex: number) => {
     if (!form) return;
 
@@ -149,6 +158,7 @@ export const useFormBuilder = () => {
     setDraggedField,
     createNewForm,
     addSection,
+    deleteSection,
     addField,
     updateField,
     deleteField,
