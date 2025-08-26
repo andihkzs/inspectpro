@@ -92,29 +92,30 @@ const Dashboard: React.FC = () => {
 
       {/* Forms Table */}
       <div className="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+        <div className="overflow-x-auto">
         {forms.length > 0 ? (
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Form Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                   Industry
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                   Sections
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                   Fields
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
                   Updated
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-20 sm:w-24">
                   Actions
                 </th>
               </tr>
@@ -122,64 +123,68 @@ const Dashboard: React.FC = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {forms.map((form) => (
                 <tr key={form.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 sm:px-6 py-4">
                     <div>
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-gray-900 truncate max-w-xs sm:max-w-none">
                         {form.title}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-500 truncate max-w-xs sm:max-w-none">
                         {form.description || 'No description'}
+                      </div>
+                      {/* Show industry on mobile */}
+                      <div className="text-xs text-gray-400 mt-1 sm:hidden capitalize">
+                        {form.industry.replace('-', ' ')}
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
                     <span className="text-sm text-gray-900 capitalize">
                       {form.industry.replace('-', ' ')}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center space-x-2">
                       {form.isPublished ? (
                         <>
-                          <CheckCircleIcon className="w-4 h-4 text-green-600" />
-                          <span className="text-sm text-green-800 bg-green-100 px-2 py-1 rounded-full">
+                          <CheckCircleIcon className="w-4 h-4 text-green-600 flex-shrink-0" />
+                          <span className="text-xs sm:text-sm text-green-800 bg-green-100 px-2 py-1 rounded-full">
                             Published
                           </span>
                         </>
                       ) : (
                         <>
-                          <ClockIcon className="w-4 h-4 text-yellow-600" />
-                          <span className="text-sm text-yellow-800 bg-yellow-100 px-2 py-1 rounded-full">
+                          <ClockIcon className="w-4 h-4 text-yellow-600 flex-shrink-0" />
+                          <span className="text-xs sm:text-sm text-yellow-800 bg-yellow-100 px-2 py-1 rounded-full">
                             Draft
                           </span>
                         </>
                       )}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
                     {form.sections.length}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
                     {form.sections.reduce((acc, section) => acc + section.fields.length, 0)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
                     {formatDate(form.updatedAt)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div className="flex items-center justify-end space-x-2">
+                  <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium w-20 sm:w-24">
+                    <div className="flex items-center justify-end space-x-1">
                       <Link
                         to={`/forms/${form.id}/edit`}
                         className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
                         title="Edit"
                       >
-                        <PencilIcon className="w-4 h-4" />
+                        <PencilIcon className="w-5 h-5 flex-shrink-0" />
                       </Link>
                       <button
                         onClick={() => handleDeleteForm(form.id)}
                         className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
                         title="Delete"
                       >
-                        <TrashIcon className="w-4 h-4" />
+                        <TrashIcon className="w-5 h-5 flex-shrink-0" />
                       </button>
                     </div>
                   </td>
@@ -199,6 +204,7 @@ const Dashboard: React.FC = () => {
             </Link>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
