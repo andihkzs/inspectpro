@@ -93,6 +93,30 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm
       };
       setForm(newForm);
     }
+    
+    // Create empty form if no template or existing form provided
+    if (!initialTemplate && !existingForm && !form) {
+      const emptyForm = {
+        id: Date.now().toString(), // Temporary ID
+        title: 'Untitled Form',
+        description: '',
+        industry: 'general',
+        sections: [],
+        createdBy: 'current-user',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        version: 1,
+        isTemplate: false,
+        isPublished: false,
+        settings: {
+          allowOffline: true,
+          requireLocation: true,
+          requireSignature: false,
+          autoSave: true
+        }
+      };
+      setForm(emptyForm);
+    }
   }, [initialTemplate, existingForm, form, setForm]);
 
   const fieldTypes = [
