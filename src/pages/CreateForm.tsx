@@ -25,8 +25,9 @@ const CreateForm: React.FC = () => {
     try {
       setSaving(true);
       
-      // Create the new form
-      await formService.createForm(form);
+      // Create the new form - exclude id, createdAt, updatedAt to let service generate them
+      const { id, createdAt, updatedAt, ...formData } = form;
+      await formService.createForm(formData);
       
       // Navigate back to dashboard
       navigate('/dashboard');
