@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Navigation from './components/Layout/Navigation';
 import Dashboard from './pages/Dashboard';
 import CreateForm from './pages/CreateForm';
+import EditForm from './pages/EditForm';
 import Help from './pages/Help';
 
 const App: React.FC = () => {
@@ -20,6 +21,7 @@ const App: React.FC = () => {
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/forms/create" element={<CreateForm />} />
+            <Route path="/forms/:id/edit" element={<EditForm />} />
             <Route path="/help" element={<Help />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

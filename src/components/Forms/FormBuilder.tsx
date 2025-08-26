@@ -22,6 +22,7 @@ import {
 
 interface FormBuilderProps {
   initialTemplate?: AITemplate;
+  existingForm?: InspectionForm;
   onSave: (form: any) => void;
 }
 
@@ -61,6 +62,15 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, onSave }) =>
 
   // Initialize form with template if provided
   React.useEffect(() => {
+    if (initialTemplate && existingForm) {
+      console.warn('Both initialTemplate and existingForm provided. Using existingForm.');
+    }
+    
+    if (existingForm && !form) {
+      setForm(existingForm);
+      return;
+    }
+    
     if (initialTemplate && !form) {
       const newForm = {
         id: initialTemplate.id,
