@@ -51,36 +51,6 @@ const CreateForm: React.FC = () => {
               <SparklesIcon className="w-5 h-5" />
               <span>AI Form Generator</span>
             </button>
-            
-            <button
-              onClick={() => {
-                // Create a new blank form
-                const blankForm: InspectionForm = {
-                  id: Date.now().toString(),
-                  title: 'New Inspection Form',
-                  description: '',
-                  industry: 'general',
-                  sections: [],
-                  createdBy: 'demo-user',
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                  version: 1,
-                  isTemplate: false,
-                  isPublished: false,
-                  settings: {
-                    allowOffline: true,
-                    requireLocation: true,
-                    requireSignature: false,
-                    autoSave: true
-                  }
-                };
-                handleSaveForm(blankForm);
-              }}
-              className="flex items-center space-x-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-            >
-              <DocumentPlusIcon className="w-5 h-5" />
-              <span>Start from Scratch</span>
-            </button>
           </div>
         </div>
 
