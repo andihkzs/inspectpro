@@ -25,17 +25,11 @@ const CreateForm: React.FC = () => {
     try {
       setSaving(true);
       
-      // Check if form exists (update) or is new (create)
-      const existingForm = await formService.getFormById(form.id);
+      // Create the new form
+      await formService.createForm(form);
       
-      if (existingForm) {
-        await formService.updateForm(form.id, form);
-      } else {
-        await formService.createForm(form);
-      }
-      
-      // Navigate back to forms list
-      navigate('/forms');
+      // Navigate back to dashboard
+      navigate('/dashboard');
     } catch (error) {
       console.error('Error saving form:', error);
       // Could show a toast notification here
