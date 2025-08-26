@@ -10,6 +10,7 @@ import {
   DocumentIcon,
   QuestionMarkCircleIcon
 } from '@heroicons/react/24/outline';
+import packageJson from '../../../package.json';
 
 const Navigation: React.FC = () => {
   const location = useLocation();
