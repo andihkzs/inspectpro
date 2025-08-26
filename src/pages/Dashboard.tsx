@@ -92,16 +92,6 @@ const Dashboard: React.FC = () => {
       {/* Error State */}
       {error && (
         <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-          {error}
-          <button
-            onClick={loadForms}
-            className="ml-4 text-red-800 hover:text-red-900 font-medium"
-          >
-            Try Again
-          </button>
-        </div>
-      )}
-
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
