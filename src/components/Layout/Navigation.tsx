@@ -27,7 +27,12 @@ const Navigation: React.FC = () => {
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">I</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">InspectPro</span>
+              <div className="flex items-center space-x-2">
+                <span className="text-xl font-bold text-gray-900">InspectPro</span>
+                <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full font-medium">
+                  v{packageJson.version}
+                </span>
+              </div>
             </Link>
           </div>
 
