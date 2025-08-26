@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { formService } from '../../services/formService';
 import { InspectionForm } from '../types';
-import DashboardOverview from '../components/Dashboard/DashboardOverview';
+import DashboardOverview from '../Dashboard/DashboardOverview';
 import { 
   DocumentPlusIcon, 
   DocumentIcon,
