@@ -473,7 +473,8 @@ const AIGeneratorSidebar: React.FC<AIGeneratorSidebarProps> = ({
                               message.template.confidence > 0.9 ? 'bg-green-100 text-green-800' :
                               message.template.confidence > 0.7 ? 'bg-yellow-100 text-yellow-800' :
                               'bg-red-100 text-red-800'
-                            }`}>
+                            }`}
+                            title={`AI Confidence: ${(message.template.confidence * 100).toFixed(0)}%\n\n90%+ = High confidence - template should work well\n70-89% = Good confidence - may need minor tweaks\nBelow 70% = Lower confidence - review carefully`}>
                               {(message.template.confidence * 100).toFixed(0)}%
                             </span>
                           </div>
