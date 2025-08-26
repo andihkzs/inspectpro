@@ -26,13 +26,15 @@ const Dashboard: React.FC = () => {
 
   const loadForms = async () => {
     try {
+      console.log('🏠 Dashboard: Loading forms...');
       setLoading(true);
       setError(null);
       const loadedForms = await formService.getAllForms();
-      console.log('Loaded forms in dashboard:', loadedForms);
+      console.log('🏠 Dashboard: Loaded forms:', loadedForms);
+      console.log('🏠 Dashboard: Number of forms loaded:', loadedForms.length);
       setForms(loadedForms);
     } catch (err) {
-      console.error('Error loading forms:', err);
+      console.error('🏠 Dashboard: Error loading forms:', err);
       setError('Failed to load forms. Please try again.');
     } finally {
       setLoading(false);

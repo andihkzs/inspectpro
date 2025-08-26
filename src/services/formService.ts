@@ -189,12 +189,18 @@ class FormService {
   }
 
   private createFormInLocalStorage(form: InspectionForm): InspectionForm {
+    console.log('📝 Creating form in localStorage:', form);
     const forms = this.getFormsFromLocalStorage();
-    console.log('Current forms before save:', forms);
+    console.log('📋 Current forms before save:', forms);
     forms.unshift(form);
-    console.log('Forms after adding new form:', forms);
+    console.log('📋 Forms after adding new form:', forms);
     this.saveFormsToLocalStorage(forms);
-    console.log('Form saved to localStorage');
+    console.log('💾 Form saved to localStorage successfully');
+    
+    // Verify the save worked
+    const savedForms = this.getFormsFromLocalStorage();
+    console.log('🔍 Verification - Forms now in localStorage:', savedForms);
+    
     return form;
   }
 
@@ -225,7 +231,11 @@ class FormService {
   }
 
   private saveFormsToLocalStorage(forms: InspectionForm[]): void {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(forms));
+    console.log('💾 Saving forms to localStorage:', forms);
+    const jsonData = JSON.stringify(forms);
+    console.log('💾 JSON data being saved:', jsonData);
+    localStorage.setItem(this.STORAGE_KEY, jsonData);
+    console.log('💾 Successfully saved to localStorage with key:', this.STORAGE_KEY);
   }
 
   // Data transformation helpers
