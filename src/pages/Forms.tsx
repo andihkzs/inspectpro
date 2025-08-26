@@ -6,130 +6,88 @@
 import React, { useState, useEffect } from 'react';
 import FormList from '../components/Forms/FormList';
 import { InspectionForm } from '../types';
-import { v4 as uuidv4 } from 'uuid';
+import { formService } from '../services/formService';
 
 const Forms: React.FC = () => {
   const [forms, setForms] = useState<InspectionForm[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Load forms from localStorage or API
-    const savedForms = localStorage.getItem('inspectionForms');
-    if (savedForms) {
-      const parsedForms = JSON.parse(savedForms);
-      // Convert date strings back to Date objects
-      const formsWithDates = parsedForms.map((form: any) => ({
-        ...form,
-        createdAt: new Date(form.createdAt),
-        updatedAt: new Date(form.updatedAt)
-      }));
-      setForms(formsWithDates);
-    } else {
-      // Initialize with sample data
-      const sampleForms: InspectionForm[] = [
-        {
-          id: uuidv4(),
-          title: 'Apartment Cleaning Inspection',
-          description: 'Standard cleaning inspection for residential properties',
-          industry: 'property-management',
-          sections: [
-            {
-              id: uuidv4(),
-              title: 'General Information',
-              order: 0,
-              fields: [
-                {
-                  id: uuidv4(),
-                  type: 'text',
-                  label: 'Property Address',
-                  required: true
-                },
-                {
-                  id: uuidv4(),
-                  type: 'select',
-                  label: 'Property Type',
-                  required: true,
-                  options: ['Apartment', 'House', 'Condo']
-                }
-              ]
-            }
-          ],
-          createdBy: 'current-user',
-          createdAt: new Date(Date.now() - 86400000), // 1 day ago
-          updatedAt: new Date(Date.now() - 3600000), // 1 hour ago
-          version: 1,
-          isTemplate: false,
-          isPublished: true,
-          settings: {
-            allowOffline: true,
-            requireLocation: true,
-            requireSignature: false,
-            autoSave: true
-          }
-        },
-        {
-          id: uuidv4(),
-          title: 'Restaurant Safety Check',
-          description: 'Health and safety inspection for food service establishments',
-          industry: 'food-service',
-          sections: [
-            {
-              id: uuidv4(),
-              title: 'Basic Information',
-              order: 0,
-              fields: [
-                {
-                  id: uuidv4(),
-                  type: 'text',
-                  label: 'Restaurant Name',
-                  required: true
-                },
-                {
-                  id: uuidv4(),
-                  type: 'rating',
-                  label: 'Overall Cleanliness',
-                  required: true,
-                  validation: { min: 1, max: 5 }
-                }
-              ]
-            }
-          ],
-          createdBy: 'current-user',
-          createdAt: new Date(Date.now() - 172800000), // 2 days ago
-          updatedAt: new Date(Date.now() - 7200000), // 2 hours ago
-          version: 2,
-          isTemplate: false,
-          isPublished: false,
-          settings: {
-            allowOffline: true,
-            requireLocation: true,
-            requireSignature: true,
-            autoSave: true
-          }
-        }
-      ];
-      setForms(sampleForms);
-      localStorage.setItem('inspectionForms', JSON.stringify(sampleForms));
-    }
+    loadForms();
   }, []);
 
-  const handleDeleteForm = (id: string) => {
-    const updatedForms = forms.filter(form => form.id !== id);
-    setForms(updatedForms);
-    localStorage.setItem('inspectionForms', JSON.stringify(updatedForms));
+  const loadForms = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const loadedForms = await formService.getAllForms();
+      setForms(loadedForms);
+    } catch (err) {
+      console.error('Error loading forms:', err);
+      setError('Failed to load forms. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleSaveForm = (form: InspectionForm) => {
-    const updatedForms = forms.some(f => f.id === form.id)
-      ? forms.map(f => f.id === form.id ? form : f)
-      : [...forms, form];
-    
-    setForms(updatedForms);
-    localStorage.setItem('inspectionForms', JSON.stringify(updatedForms));
+  const handleDeleteForm = async (id: string) => {
+    try {
+      await formService.deleteForm(id);
+      setForms(forms.filter(form => form.id !== id));
+    } catch (err) {
+      console.error('Error deleting form:', err);
+      setError('Failed to delete form. Please try again.');
+    }
   };
+
+  const handleSaveForm = async (form: InspectionForm) => {
+    try {
+      const savedForm = forms.some(f => f.id === form.id)
+        ? await formService.updateForm(form.id, form)
+        : await formService.createForm(form);
+      
+      const updatedForms = forms.some(f => f.id === form.id)
+        ? forms.map(f => f.id === form.id ? savedForm : f)
+        : [savedForm, ...forms];
+      
+      setForms(updatedForms);
+    } catch (err) {
+      console.error('Error saving form:', err);
+      setError('Failed to save form. Please try again.');
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your forms...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="text-center py-12">
+          <div className="text-red-600 mb-4">{error}</div>
+          <button
+            onClick={loadForms}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <FormList forms={forms} onDeleteForm={handleDeleteForm} />
+      <FormList forms={forms} onDeleteForm={handleDeleteForm} onSaveForm={handleSaveForm} />
     </div>
   );
 };

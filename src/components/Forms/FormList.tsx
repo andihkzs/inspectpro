@@ -22,9 +22,10 @@ import {
 interface FormListProps {
   forms: InspectionForm[];
   onDeleteForm: (id: string) => void;
+  onSaveForm?: (form: InspectionForm) => void;
 }
 
-const FormList: React.FC<FormListProps> = ({ forms, onDeleteForm }) => {
+const FormList: React.FC<FormListProps> = ({ forms, onDeleteForm, onSaveForm }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'published' | 'draft'>('all');
   const [filterIndustry, setFilterIndustry] = useState('all');
