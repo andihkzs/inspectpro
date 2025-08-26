@@ -260,48 +260,7 @@ class FormService {
 
   // Default sample forms for first-time users
   private getDefaultForms(): InspectionForm[] {
-    return [
-      {
-        id: uuidv4(),
-        title: 'Apartment Cleaning Inspection',
-        description: 'Standard cleaning inspection for residential properties',
-        industry: 'property-management',
-        sections: [
-          {
-            id: uuidv4(),
-            title: 'General Information',
-            order: 0,
-            fields: [
-              {
-                id: uuidv4(),
-                type: 'text',
-                label: 'Property Address',
-                required: true
-              },
-              {
-                id: uuidv4(),
-                type: 'select',
-                label: 'Property Type',
-                required: true,
-                options: ['Apartment', 'House', 'Condo']
-              }
-            ]
-          }
-        ],
-        createdBy: this.DEFAULT_USER_ID,
-        createdAt: new Date(Date.now() - 86400000),
-        updatedAt: new Date(Date.now() - 3600000),
-        version: 1,
-        isTemplate: false,
-        isPublished: true,
-        settings: {
-          allowOffline: true,
-          requireLocation: true,
-          requireSignature: false,
-          autoSave: true
-        }
-      }
-    ];
+    return [];
   }
 }
 
