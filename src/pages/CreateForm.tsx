@@ -49,10 +49,7 @@ const CreateForm: React.FC = () => {
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h1 className="text-3xl font-bold text-gray-900">Create New Form</h1>
-          <p className="text-gray-600 mt-2">
-            Build your inspection form using the drag-and-drop builder. Use the AI generator (purple button) for quick templates.
-            {saving && <span className="text-blue-600 ml-2">Saving...</span>}
-          </p>
+          {saving && <p className="text-blue-600 mt-2">Saving...</p>}
           
           <div className="flex items-center space-x-4 mt-6">
             <button
