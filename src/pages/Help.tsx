@@ -79,6 +79,37 @@ The AI Generator creates comprehensive inspection forms using natural language d
 ## 🤖 How It Works
 The AI understands your requirements and automatically creates structured forms with appropriate sections and fields.
 
+## 🎯 Understanding AI Confidence Scores
+
+Every AI-generated template includes a confidence score that indicates how well the AI understood your request and how suitable the generated form is for your needs.
+
+### Confidence Score Ranges:
+- **90-100%** (🟢 High Confidence)
+  - Template should work excellently for your needs
+  - All sections and fields are highly relevant
+  - Minimal customization required
+  
+- **70-89%** (🟡 Good Confidence) 
+  - Template is generally good but may need minor tweaks
+  - Most sections are relevant with some adjustments needed
+  - Review fields and modify as needed
+
+- **Below 70%** (🔴 Lower Confidence)
+  - Template provides a starting point but needs review
+  - May include irrelevant sections or miss important ones
+  - Use as a foundation and customize extensively
+
+### What Affects Confidence:
+- **Specificity**: "Restaurant kitchen safety inspection" vs "inspection form"
+- **Industry Recognition**: Known industries like "property management" score higher
+- **Clear Requirements**: Detailed descriptions produce better results
+- **Standard Use Cases**: Common inspection types have higher confidence
+
+### Using Confidence Scores:
+- **High confidence**: Start with the template and make minor adjustments
+- **Medium confidence**: Review each section carefully before publishing
+- **Low confidence**: Use as inspiration but build your own structure
+
 ## ✅ Good Prompts
 - "Create inspection form for 2-bedroom apartment cleaning"
 - "Restaurant health and safety inspection checklist"
