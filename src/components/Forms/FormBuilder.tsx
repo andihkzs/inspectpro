@@ -26,7 +26,7 @@ interface FormBuilderProps {
   onSave: (form: any) => void;
 }
 
-const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, onSave }) => {
+const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm, onSave }) => {
   const {
     form,
     setForm,
@@ -93,7 +93,6 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, onSave }) =>
       };
       setForm(newForm);
     }
-  }, [initialTemplate, form, setForm]);
 
   const fieldTypes = [
     { type: 'text', label: 'Text Input', icon: PencilIcon, description: 'Single line text' },
