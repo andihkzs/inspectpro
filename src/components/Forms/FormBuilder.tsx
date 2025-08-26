@@ -71,9 +71,10 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm
       return;
     }
     
-    if (initialTemplate && !form) {
+    // Handle new template - either when no form exists or when template changes
+    if (initialTemplate && (!form || (form && form.sections.length === 0))) {
       const newForm = {
-        id: initialTemplate.id,
+        id: Date.now().toString(), // Generate new ID for the form
         title: initialTemplate.name,
         description: initialTemplate.description,
         industry: initialTemplate.industry,
@@ -92,6 +93,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm
         }
       };
       setForm(newForm);
+      return;
     }
     
     // Create empty form if no template or existing form provided
