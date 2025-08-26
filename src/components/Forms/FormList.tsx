@@ -22,10 +22,9 @@ import {
 interface FormListProps {
   forms: InspectionForm[];
   onDeleteForm: (id: string) => void;
-  onSaveForm?: (form: InspectionForm) => void;
 }
 
-const FormList: React.FC<FormListProps> = ({ forms, onDeleteForm, onSaveForm }) => {
+const FormList: React.FC<FormListProps> = ({ forms, onDeleteForm }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'published' | 'draft'>('all');
   const [filterIndustry, setFilterIndustry] = useState('all');
@@ -157,13 +156,12 @@ const FormList: React.FC<FormListProps> = ({ forms, onDeleteForm, onSaveForm }) 
 
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <Link
-                  to={`/forms/${form.id}/preview`}
+                <button
                   className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   title="Preview"
                 >
                   <EyeIcon className="w-4 h-4" />
-                </Link>
+                </button>
                 <Link
                   to={`/forms/${form.id}/edit`}
                   className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"

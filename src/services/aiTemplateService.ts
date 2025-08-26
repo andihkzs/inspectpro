@@ -523,33 +523,6 @@ class AITemplateService {
   getIndustryTemplates(): AITemplate[] {
     return Object.values(this.industryTemplates);
   }
-
-  suggestFields(context: string): FormField[] {
-    // Return suggested fields based on context
-    const suggestions: FormField[] = [
-      {
-        id: uuidv4(),
-        type: 'photo',
-        label: 'Evidence Photos',
-        required: false
-      },
-      {
-        id: uuidv4(),
-        type: 'signature',
-        label: 'Inspector Signature',
-        required: true
-      },
-      {
-        id: uuidv4(),
-        type: 'textarea',
-        label: 'Additional Comments',
-        required: false,
-        placeholder: 'Any additional observations or notes'
-      }
-    ];
-
-    return suggestions;
-  }
 }
 
 export const aiTemplateService = new AITemplateService();

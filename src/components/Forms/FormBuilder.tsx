@@ -5,7 +5,7 @@
 
 import React, { useState } from 'react';
 import { useFormBuilder } from '../../hooks/useFormBuilder';
-import { FormField, FormSection, AITemplate } from '../../types';
+import { FormField, FormSection, AITemplate, InspectionForm } from '../../types';
 import { 
   PlusIcon, 
   TrashIcon, 

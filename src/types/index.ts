@@ -1,18 +1,7 @@
 /**
  * Core TypeScript type definitions for the Inspection Form Builder
- * Defines interfaces for forms, users, inspections, and system entities
+ * Defines interfaces for forms and system entities
  */
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: 'admin' | 'inspector' | 'reviewer';
-  avatar?: string;
-  active: boolean;
-  createdAt: Date;
-  lastLogin?: Date;
-}
 
 export interface FormField {
   id: string;
@@ -59,54 +48,6 @@ export interface InspectionForm {
     requireSignature: boolean;
     autoSave: boolean;
   };
-}
-
-export interface InspectionResponse {
-  id: string;
-  formId: string;
-  inspectorId: string;
-  assignedBy: string;
-  responses: Record<string, any>;
-  status: 'pending' | 'in_progress' | 'completed' | 'reviewed' | 'rejected';
-  location?: {
-    latitude: number;
-    longitude: number;
-    address?: string;
-  };
-  startedAt?: Date;
-  completedAt?: Date;
-  reviewedAt?: Date;
-  reviewedBy?: string;
-  notes?: string;
-  attachments: string[];
-  signature?: string;
-}
-
-export interface Report {
-  id: string;
-  inspectionId: string;
-  generatedAt: Date;
-  format: 'pdf' | 'csv' | 'json';
-  downloadUrl: string;
-  qrCode?: string;
-  shareableLink?: string;
-  expiresAt?: Date;
-}
-
-export interface Dashboard {
-  totalInspections: number;
-  completedInspections: number;
-  pendingInspections: number;
-  overdueDays: number;
-  completionRate: number;
-  avgCompletionTime: number;
-  recentActivity: Array<{
-    id: string;
-    type: 'inspection_completed' | 'form_created' | 'user_assigned';
-    message: string;
-    timestamp: Date;
-    user: string;
-  }>;
 }
 
 export interface AITemplate {
