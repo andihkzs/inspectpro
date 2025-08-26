@@ -6,7 +6,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navigation from './components/Layout/Navigation';
+import Dashboard from './pages/Dashboard';
 import CreateForm from './pages/CreateForm';
+import Help from './pages/Help';
 
 const App: React.FC = () => {
   return (
@@ -15,8 +17,10 @@ const App: React.FC = () => {
         <Navigation />
         <main className="py-4">
           <Routes>
-            <Route path="/" element={<Navigate to="/forms/create" replace />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/forms/create" element={<CreateForm />} />
+            <Route path="/help" element={<Help />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

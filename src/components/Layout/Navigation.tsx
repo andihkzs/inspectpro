@@ -8,6 +8,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   Bars3Icon,
   XMarkIcon,
+  QuestionMarkCircleIcon,
+  DocumentPlusIcon
+  ChartBarIcon
 } from '@heroicons/react/24/outline';
 
 interface NavigationProps {
@@ -18,7 +21,11 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  const navigation: any[] = [];
+  const navigation = [
+    { name: 'Dashboard', href: '/dashboard', icon: ChartBarIcon },
+    { name: 'Create Form', href: '/forms/create', icon: DocumentPlusIcon },
+    { name: 'Help', href: '/help', icon: QuestionMarkCircleIcon }
+  ];
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -38,7 +45,23 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {/* Navigation items will go here when needed */}
+            {navigation.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive(item.href)
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{item.name}</span>
+                </Link>
+              );
+            })}
           </div>
 
           {/* Mobile menu button */}
