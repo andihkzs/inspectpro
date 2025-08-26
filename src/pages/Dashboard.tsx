@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { formService } from '../services/formService';
+import { InspectionForm } from '../types';
 import { 
   PencilIcon,
   TrashIcon,
@@ -88,6 +89,8 @@ const Dashboard: React.FC = () => {
           {error}
         </div>
       )}
+
+      {/* Forms Table */}
       <div className="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
         {forms.length > 0 ? (
           <table className="min-w-full divide-y divide-gray-200">
