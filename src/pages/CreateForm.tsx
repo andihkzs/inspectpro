@@ -24,16 +24,17 @@ const CreateForm: React.FC = () => {
   const handleSaveForm = async (form: InspectionForm) => {
     try {
       setSaving(true);
+      console.log('Saving form:', form);
       
       // Create the new form - exclude id, createdAt, updatedAt to let service generate them
       const { id, createdAt, updatedAt, ...formData } = form;
+      console.log('Form data to save:', formData);
       await formService.createForm(formData);
       
       // Navigate back to dashboard
       navigate('/dashboard');
     } catch (error) {
       console.error('Error saving form:', error);
-      // Could show a toast notification here
     } finally {
       setSaving(false);
     }

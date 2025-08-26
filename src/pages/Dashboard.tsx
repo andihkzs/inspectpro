@@ -29,6 +29,7 @@ const Dashboard: React.FC = () => {
       setLoading(true);
       setError(null);
       const loadedForms = await formService.getAllForms();
+      console.log('Loaded forms in dashboard:', loadedForms);
       setForms(loadedForms);
     } catch (err) {
       console.error('Error loading forms:', err);

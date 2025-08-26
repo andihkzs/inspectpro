@@ -190,8 +190,11 @@ class FormService {
 
   private createFormInLocalStorage(form: InspectionForm): InspectionForm {
     const forms = this.getFormsFromLocalStorage();
+    console.log('Current forms before save:', forms);
     forms.unshift(form);
+    console.log('Forms after adding new form:', forms);
     this.saveFormsToLocalStorage(forms);
+    console.log('Form saved to localStorage');
     return form;
   }
 
