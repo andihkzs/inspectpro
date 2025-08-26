@@ -93,6 +93,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm
       };
       setForm(newForm);
     }
+  }, [initialTemplate, existingForm, form, setForm]);
 
   const fieldTypes = [
     { type: 'text', label: 'Text Input', icon: PencilIcon, description: 'Single line text' },
