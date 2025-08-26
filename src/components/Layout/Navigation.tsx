@@ -1,114 +1,100 @@
 /**
- * Main navigation component with responsive design
- * Handles menu items, user avatar, and mobile navigation
+ * Main dashboard page component
+ * Displays all saved forms with statistics and management options
  */
 
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React from 'react';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { formService } from '../services/formService';
+import { InspectionForm } from '../types';
+import DashboardOverview from '../components/Dashboard/DashboardOverview';
 import { 
-  Bars3Icon,
-  XMarkIcon,
-  QuestionMarkCircleIcon,
-  DocumentPlusIcon
+  DocumentPlusIcon, 
+  DocumentIcon,
+  PencilIcon,
+  TrashIcon,
+  EyeIcon,
+  CheckCircleIcon,
+  ClockIcon,
   ChartBarIcon
 } from '@heroicons/react/24/outline';
 
-interface NavigationProps {
-  className?: string;
-}
+const Dashboard: React.FC = () => {
+  const [forms, setForms] = useState<InspectionForm[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
+  useEffect(() => {
+    loadForms();
+  }, []);
 
-  const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: ChartBarIcon },
-    { name: 'Create Form', href: '/forms/create', icon: DocumentPlusIcon },
-    { name: 'Help', href: '/help', icon: QuestionMarkCircleIcon }
-  ];
+  const loadForms = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const loadedForms = await formService.getAllForms();
+      setForms(loadedForms);
+    } catch (err) {
+      console.error('Error loading forms:', err);
+      setError('Failed to load forms. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const isActive = (path: string) => location.pathname === path;
+  const handleDeleteForm = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this form?')) return;
+    
+    try {
+      await formService.deleteForm(id);
+      setForms(forms.filter(form => form.id !== id));
+    } catch (err) {
+      console.error('Error deleting form:', err);
+      setError('Failed to delete form. Please try again.');
+    }
+  };
 
-  return (
-    <nav className={`bg-white shadow-lg border-b border-gray-200 ${className}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">I</span>
-              </div>
-              <span className="text-xl font-bold text-gray-900">InspectPro</span>
-            </Link>
-          </div>
+  const formatDate = (date: Date) => {
+    return new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    }).format(date);
+  };
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive(item.href)
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.name}</span>
-                </Link>
-              );
-            })}
-          </div>
+  const stats = {
+    total: forms.length,
+    published: forms.filter(f => f.isPublished).length,
+    draft: forms.filter(f => !f.isPublished).length,
+    totalFields: forms.reduce((acc, form) => acc + form.sections.reduce((sAcc, section) => sAcc + section.fields.length, 0), 0)
+  };
 
-          {/* Mobile menu button */}
-          {navigation.length > 0 && (
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="text-gray-600 hover:text-gray-900 focus:outline-none"
-              >
-                {isOpen ? (
-                  <XMarkIcon className="w-6 h-6" />
-                ) : (
-                  <Bars3Icon className="w-6 h-6" />
-                )}
-              </button>
-            </div>
-          )}
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your dashboard...</p>
         </div>
       </div>
+    );
+  }
 
-      {/* Mobile Navigation */}
-      {isOpen && navigation.length > 0 && (
-        <div className="md:hidden bg-white border-t border-gray-200">
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  onClick={() => setIsOpen(false)}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                    isActive(item.href)
-                      ? 'bg-blue-100 text-blue-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  <span>{item.name}</span>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
-    </nav>
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">
+          Welcome back, Demo User
+        </h1>
+        <p className="text-gray-600 mt-2">
+          Here's what's happening with your inspections today
+        </p>
+      </div>
+
+      <DashboardOverview />
+    </div>
   );
 };
 
-export default Navigation;
+export default Dashboard;
