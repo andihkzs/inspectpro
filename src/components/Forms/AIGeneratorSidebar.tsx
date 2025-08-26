@@ -293,13 +293,9 @@ const AIGeneratorSidebar: React.FC<AIGeneratorSidebarProps> = ({
     onTemplateGenerated(template);
     addMessage({
       type: 'system',
-      content: `✅ Template "${template.name}" has been applied to your form builder! The sidebar will close now.`
+      content: `✅ Template "${template.name}" has been applied to your form builder! You can continue chatting to modify the form or ask questions.`
     });
-    // Clear the conversation and close sidebar
-    setTimeout(() => {
-      clearConversation();
-      onToggle();
-    }, 1500);
+    // Keep the conversation open for continued interaction
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
