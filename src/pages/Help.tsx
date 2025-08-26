@@ -482,24 +482,6 @@ const forms = JSON.parse(localStorage.getItem('inspectionForms') || '[]');
                   }} />
                 </div>
 
-                {/* Quick Actions */}
-                <div className="mt-8 pt-6 border-t border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-                  <div className="flex flex-wrap gap-3">
-                    <button className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                      <RocketLaunchIcon className="w-4 h-4" />
-                      <span>Try Now</span>
-                    </button>
-                    <button className="inline-flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                      <BookOpenIcon className="w-4 h-4" />
-                      <span>View Examples</span>
-                    </button>
-                    <button className="inline-flex items-center space-x-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-                      <ExclamationTriangleIcon className="w-4 h-4" />
-                      <span>Report Issue</span>
-                    </button>
-                  </div>
-                </div>
               </div>
             )}
           </div>
