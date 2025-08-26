@@ -6,21 +6,27 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { formService } from '../services/formService';
+import { isSupabaseConfigured } from '../lib/supabase';
 import { InspectionForm } from '../types';
 import { 
   PencilIcon,
   TrashIcon,
   PlusIcon,
   CheckCircleIcon,
-  ClockIcon
+  ClockIcon,
+  ExclamationTriangleIcon,
+  LinkIcon
 } from '@heroicons/react/24/outline';
 
 const Dashboard: React.FC = () => {
   const [forms, setForms] = useState<InspectionForm[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [supabaseConnected, setSupabaseConnected] = useState(false);
 
   useEffect(() => {
+    // Check Supabase connection status
+    setSupabaseConnected(isSupabaseConfigured());
     loadForms();
   }, []);
 
@@ -77,14 +83,42 @@ const Dashboard: React.FC = () => {
       {/* Header with App Name and Create Button */}
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold text-gray-900">InspectPro</h1>
-        <Link
-          to="/forms/create"
-          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <PlusIcon className="w-4 h-4" />
-          <span>Create New Form</span>
-        </Link>
+        <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <div className={`w-3 h-3 rounded-full ${supabaseConnected ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
+            <span className="text-sm text-gray-600">
+              {supabaseConnected ? 'Connected to Supabase' : 'Using Local Storage'}
+            </span>
+          </div>
+          <Link
+            to="/forms/create"
+            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <PlusIcon className="w-4 h-4" />
+            <span>Create New Form</span>
+          </Link>
+        </div>
       </div>
+
+      {/* Supabase Connection Notice */}
+      {!supabaseConnected && (
+        <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex items-start space-x-3">
+            <ExclamationTriangleIcon className="w-5 h-5 text-yellow-600 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="text-sm font-medium text-yellow-800">Database Connection</h3>
+              <p className="text-sm text-yellow-700 mt-1">
+                You're currently using local storage. To save forms permanently and share them across devices, 
+                connect to Supabase using the "Connect to Supabase" button in the top right corner.
+              </p>
+            </div>
+            <button className="flex items-center space-x-2 px-3 py-1 bg-yellow-100 text-yellow-800 rounded-md hover:bg-yellow-200 transition-colors text-sm">
+              <LinkIcon className="w-4 h-4" />
+              <span>Connect to Supabase</span>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Error State */}
       {error && (
