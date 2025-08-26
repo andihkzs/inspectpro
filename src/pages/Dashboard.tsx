@@ -195,13 +195,7 @@ const Dashboard: React.FC = () => {
         ) : (
           <div className="text-center py-12">
             <p className="text-gray-500 mb-4">No forms created yet</p>
-            <Link
-              to="/forms/create"
-              className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <PlusIcon className="w-4 h-4" />
-              <span>Create Your First Form</span>
-            </Link>
+            <p className="text-gray-400 text-sm">Click "Create New Form" above to get started</p>
           </div>
         )}
         </div>
