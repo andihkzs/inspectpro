@@ -41,57 +41,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm
 
   const [showFieldPalette, setShowFieldPalette] = useState(false);
   const [editingField, setEditingField] = useState<{ sectionId: string; fieldId: string } | null>(null);
-  const [saving, setSaving] = useState(false);
-  const [autoSaving, setAutoSaving] = useState(false);
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [isFormSavedOnce, setIsFormSavedOnce] = useState(false);
 
-  // Debounced autosave
-  const autosaveTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-
-  // Track if this is an existing form
-  React.useEffect(() => {
-    if (existingForm) {
-      setIsFormSavedOnce(true);
-    }
-  }, [existingForm]);
-
-  // Autosave effect - triggers when form changes
-  React.useEffect(() => {
-    if (!form || !isFormSavedOnce || !hasUnsavedChanges) return;
-
-    // Clear previous timeout
-    if (autosaveTimeoutRef.current) {
-      clearTimeout(autosaveTimeoutRef.current);
-    }
-
-    // Set new timeout for autosave
-    autosaveTimeoutRef.current = setTimeout(async () => {
-      try {
-        setAutoSaving(true);
-        await onSave(form);
-        setLastSaved(new Date());
-        setHasUnsavedChanges(false);
-      } catch (error) {
-        console.error('Autosave failed:', error);
-      } finally {
-        setAutoSaving(false);
-      }
-    }, 2000); // 2 second delay
-
-    // Cleanup timeout on unmount
-    return () => {
-      if (autosaveTimeoutRef.current) {
-        clearTimeout(autosaveTimeoutRef.current);
-      }
-    };
-  }, [form, isFormSavedOnce, hasUnsavedChanges, onSave]);
-
-  // Mark form as changed
-  const markAsChanged = React.useCallback(() => {
-    setHasUnsavedChanges(true);
-  }, []);
   const toggleSection = (sectionId: string) => {
     setActiveSections(prev => 
       prev.includes(sectionId) 
@@ -143,7 +93,6 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm
         }
       };
       setForm(newForm);
-      markAsChanged();
       return;
     }
     
@@ -198,7 +147,6 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm
     };
 
     addField(sectionId, newField);
-    markAsChanged();
     setShowFieldPalette(false);
   };
 
@@ -209,37 +157,10 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm
   const handleFieldUpdate = (updates: Partial<FormField>) => {
     if (editingField) {
       updateField(editingField.sectionId, editingField.fieldId, updates);
-      markAsChanged();
       setEditingField(null);
     }
   };
 
-  const handleManualSave = async (isPublish = false) => {
-    if (!form) return;
-
-    try {
-      setSaving(true);
-      if (isPublish) {
-        publishForm();
-      }
-      await onSave(form);
-      setLastSaved(new Date());
-      setHasUnsavedChanges(false);
-      setIsFormSavedOnce(true);
-    } catch (error) {
-      console.error('Save failed:', error);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const formatLastSaved = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    }).format(date);
-  };
   const renderFieldPreview = (field: FormField) => {
     switch (field.type) {
       case 'text':
@@ -342,49 +263,21 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm
           {/* Form Actions */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Form Actions</h3>
-            
-            {/* Save Status */}
-            <div className="mb-4">
-              {autoSaving && (
-                <div className="flex items-center space-x-2 text-sm text-blue-600 mb-2">
-                  <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                  <span>Auto-saving...</span>
-                </div>
-              )}
-              {saving && (
-                <div className="flex items-center space-x-2 text-sm text-blue-600 mb-2">
-                  <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                  <span>Saving...</span>
-                </div>
-              )}
-              {lastSaved && !autoSaving && !saving && (
-                <div className="text-sm text-gray-500 mb-2">
-                  Last saved at {formatLastSaved(lastSaved)}
-                </div>
-              )}
-              {hasUnsavedChanges && !autoSaving && !saving && (
-                <div className="text-sm text-yellow-600 mb-2">
-                  Unsaved changes
-                </div>
-              )}
-            </div>
-
             <div className="flex space-x-3">
               <button
-                onClick={() => handleManualSave(false)}
-                disabled={saving || autoSaving}
+                onClick={() => onSave(form)}
                 className="flex-1 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                {saving ? 'Saving...' : 'Save Draft'}
+                Save Draft
               </button>
               <button
                 onClick={() => {
-                  handleManualSave(true);
+                  publishForm();
+                  onSave(form);
                 }}
-                disabled={saving || autoSaving}
                 className="flex-1 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
               >
-                {saving ? 'Publishing...' : 'Publish Form'}
+                Publish Form
               </button>
             </div>
           </div>
@@ -400,7 +293,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm
                   onChange={(e) => setForm({
                     ...form,
                     settings: { ...form.settings, requireLocation: e.target.checked }
-                  }) && markAsChanged()}
+                  })}
                 />
                 <span className="text-sm text-gray-700">Require location</span>
               </label>
@@ -411,7 +304,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm
                   onChange={(e) => setForm({
                     ...form,
                     settings: { ...form.settings, requireSignature: e.target.checked }
-                  }) && markAsChanged()}
+                  })}
                 />
                 <span className="text-sm text-gray-700">Require signature</span>
               </label>
@@ -422,7 +315,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm
                   onChange={(e) => setForm({
                     ...form,
                     settings: { ...form.settings, allowOffline: e.target.checked }
-                  }) && markAsChanged()}
+                  })}
                 />
                 <span className="text-sm text-gray-700">Allow offline use</span>
               </label>
@@ -462,19 +355,13 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm
             <input
               type="text"
               value={form.title}
-              onChange={(e) => {
-                setForm({ ...form, title: e.target.value });
-                markAsChanged();
-              }}
+              onChange={(e) => setForm({ ...form, title: e.target.value })}
               className="text-2xl font-bold text-gray-900 bg-transparent border-none focus:outline-none w-full"
               placeholder="Form Title"
             />
             <textarea
               value={form.description || ''}
-              onChange={(e) => {
-                setForm({ ...form, description: e.target.value });
-                markAsChanged();
-              }}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
               className="mt-2 text-gray-600 bg-transparent border-none focus:outline-none w-full resize-none"
               placeholder="Form description..."
               rows={2}
@@ -513,10 +400,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm
                             <PencilIcon className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => {
-                              deleteField(section.id, field.id);
-                              markAsChanged();
-                            }}
+                            onClick={() => deleteField(section.id, field.id)}
                             className="text-red-500 hover:text-red-700"
                           >
                             <TrashIcon className="w-4 h-4" />
@@ -542,10 +426,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ initialTemplate, existingForm
 
           {/* Add Section Button */}
           <button
-            onClick={() => {
-              addSection('New Section');
-              markAsChanged();
-            }}
+            onClick={() => addSection('New Section')}
             className="w-full py-4 bg-blue-50 border-2 border-dashed border-blue-300 rounded-lg text-blue-600 hover:bg-blue-100 transition-colors"
           >
             <PlusIcon className="w-5 h-5 mx-auto mb-1" />
