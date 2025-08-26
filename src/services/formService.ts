@@ -93,7 +93,6 @@ class FormService {
       const { data, error } = await supabase!
         .from('inspection_forms')
         .select('*')
-        .eq('created_by', this.DEFAULT_USER_ID)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -148,7 +147,6 @@ class FormService {
         .from('inspection_forms')
         .update(dbUpdates)
         .eq('id', id)
-        .eq('created_by', this.DEFAULT_USER_ID)
         .select()
         .single();
 
@@ -167,8 +165,7 @@ class FormService {
       const { error } = await supabase!
         .from('inspection_forms')
         .delete()
-        .eq('id', id)
-        .eq('created_by', this.DEFAULT_USER_ID);
+        .eq('id', id);
 
       if (error) throw error;
     } catch (error) {
@@ -184,7 +181,6 @@ class FormService {
         .from('inspection_forms')
         .select('*')
         .eq('id', id)
-        .eq('created_by', this.DEFAULT_USER_ID)
         .single();
 
       if (error) throw error;
@@ -274,6 +270,8 @@ class FormService {
       industry: form.industry,
       sections: form.sections,
       created_by: form.createdBy || this.DEFAULT_USER_ID,
+      created_at: form.createdAt?.toISOString(),
+      updated_at: form.updatedAt?.toISOString(),
       version: form.version,
       is_template: form.isTemplate,
       is_published: form.isPublished,
@@ -282,6 +280,7 @@ class FormService {
   }
 
   private transformFromDatabase(data: any): InspectionForm {
+    console.log('🔄 Transforming database record:', data);
     return {
       id: data.id,
       title: data.title,
