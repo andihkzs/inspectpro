@@ -98,34 +98,17 @@ const EditForm: React.FC = () => {
   }
 
   return (
-    <div className="flex">
-      <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h1 className="text-3xl font-bold text-gray-900">Edit Form</h1>
-          <p className="text-gray-600 mt-2">
-            Modify your inspection form using the form builder. Use the AI generator for additional suggestions.
-            {saving && <span className="text-blue-600 ml-2">Saving...</span>}
-          </p>
-          
-          <div className="flex items-center space-x-4 mt-6">
-            <button
-              onClick={() => setAiSidebarOpen(!aiSidebarOpen)}
-              disabled={saving}
-              className="flex items-center space-x-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
-            >
-              <SparklesIcon className="w-5 h-5" />
-              <span>AI Form Generator</span>
-            </button>
-            
-            <button
-              onClick={() => navigate('/dashboard')}
-              disabled={saving}
-              className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
-            >
-              Cancel
-            </button>
+    <div className="flex h-screen">
+      <div className="flex-1 overflow-y-auto">
+        {saving && (
+          <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
+            <div className="flex">
+              <div className="ml-3">
+                <p className="text-sm text-blue-700">Saving changes...</p>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
 
         <FormBuilder 
           initialTemplate={selectedTemplate} 
