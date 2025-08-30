@@ -43,17 +43,21 @@ const Dashboard: React.FC = () => {
   }, []);
 
   const handleMouseDown = (e: React.MouseEvent, columnKey: string) => {
+    console.log('Mouse down on column:', columnKey);
     setIsResizing(columnKey);
     setStartX(e.clientX);
     setStartWidth(columnWidths[columnKey as keyof typeof columnWidths]);
     e.preventDefault();
+    e.stopPropagation();
   };
 
   const handleMouseMove = React.useCallback((e: MouseEvent) => {
     if (!isResizing) return;
+    e.preventDefault();
     
     const diff = e.clientX - startX;
     const newWidth = Math.max(80, startWidth + diff); // Minimum width of 80px
+    console.log('Resizing column:', isResizing, 'to width:', newWidth);
     
     setColumnWidths(prev => ({
       ...prev,
@@ -62,6 +66,7 @@ const Dashboard: React.FC = () => {
   }, [isResizing, startX, startWidth]);
 
   const handleMouseUp = React.useCallback(() => {
+    console.log('Mouse up, stopping resize');
     setIsResizing(null);
     setStartX(0);
     setStartWidth(0);
@@ -73,6 +78,7 @@ const Dashboard: React.FC = () => {
       document.addEventListener('mouseup', handleMouseUp);
       document.body.style.cursor = 'col-resize';
       document.body.style.userSelect = 'none';
+      console.log('Added resize listeners for column:', isResizing);
       
       return () => {
         document.removeEventListener('mousemove', handleMouseMove);
@@ -183,6 +189,7 @@ const Dashboard: React.FC = () => {
       {/* Forms Table */}
       <div className="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
+        <div className="relative">
         {forms.length > 0 ? (
           <table className="min-w-full divide-y divide-gray-200" style={{ tableLayout: 'fixed' }}>
             <thead className="bg-gray-50">
@@ -193,7 +200,7 @@ const Dashboard: React.FC = () => {
                 >
                   Form Name
                   <div
-                    className="absolute top-0 right-0 w-2 h-full bg-gray-300 hover:bg-blue-400 cursor-col-resize transition-colors opacity-0 hover:opacity-100"
+                    className="absolute top-0 right-0 w-2 h-full bg-gray-400 hover:bg-blue-500 cursor-col-resize transition-colors z-10"
                     onMouseDown={(e) => handleMouseDown(e, 'name')}
                     title="Drag to resize column"
                   />
@@ -204,7 +211,7 @@ const Dashboard: React.FC = () => {
                 >
                   Industry
                   <div
-                    className="absolute top-0 right-0 w-2 h-full bg-gray-300 hover:bg-blue-400 cursor-col-resize transition-colors opacity-0 hover:opacity-100"
+                    className="absolute top-0 right-0 w-2 h-full bg-gray-400 hover:bg-blue-500 cursor-col-resize transition-colors z-10"
                     onMouseDown={(e) => handleMouseDown(e, 'industry')}
                     title="Drag to resize column"
                   />
@@ -215,7 +222,7 @@ const Dashboard: React.FC = () => {
                 >
                   Status
                   <div
-                    className="absolute top-0 right-0 w-2 h-full bg-gray-300 hover:bg-blue-400 cursor-col-resize transition-colors opacity-0 hover:opacity-100"
+                    className="absolute top-0 right-0 w-2 h-full bg-gray-400 hover:bg-blue-500 cursor-col-resize transition-colors z-10"
                     onMouseDown={(e) => handleMouseDown(e, 'status')}
                     title="Drag to resize column"
                   />
@@ -226,7 +233,7 @@ const Dashboard: React.FC = () => {
                 >
                   Sections
                   <div
-                    className="absolute top-0 right-0 w-2 h-full bg-gray-300 hover:bg-blue-400 cursor-col-resize transition-colors opacity-0 hover:opacity-100"
+                    className="absolute top-0 right-0 w-2 h-full bg-gray-400 hover:bg-blue-500 cursor-col-resize transition-colors z-10"
                     onMouseDown={(e) => handleMouseDown(e, 'sections')}
                     title="Drag to resize column"
                   />
@@ -237,7 +244,7 @@ const Dashboard: React.FC = () => {
                 >
                   Fields
                   <div
-                    className="absolute top-0 right-0 w-2 h-full bg-gray-300 hover:bg-blue-400 cursor-col-resize transition-colors opacity-0 hover:opacity-100"
+                    className="absolute top-0 right-0 w-2 h-full bg-gray-400 hover:bg-blue-500 cursor-col-resize transition-colors z-10"
                     onMouseDown={(e) => handleMouseDown(e, 'fields')}
                     title="Drag to resize column"
                   />
@@ -248,7 +255,7 @@ const Dashboard: React.FC = () => {
                 >
                   Updated
                   <div
-                    className="absolute top-0 right-0 w-2 h-full bg-gray-300 hover:bg-blue-400 cursor-col-resize transition-colors opacity-0 hover:opacity-100"
+                    className="absolute top-0 right-0 w-2 h-full bg-gray-400 hover:bg-blue-500 cursor-col-resize transition-colors z-10"
                     onMouseDown={(e) => handleMouseDown(e, 'updated')}
                     title="Drag to resize column"
                   />
@@ -339,6 +346,7 @@ const Dashboard: React.FC = () => {
             <p className="text-gray-400 text-sm">Click "Create New Form" above to get started</p>
           </div>
         )}
+        </div>
         </div>
       </div>
     </div>
