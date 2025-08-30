@@ -14,7 +14,7 @@ Thank you for your interest in contributing to InspectPro! This guide will help 
 
 1. **Fork and Clone**
    ```bash
-   git clone https://github.com/yourusername/inspectpro.git
+   git clone https://github.com/andihkzs/inspectpro.git
    cd inspectpro
    ```
 

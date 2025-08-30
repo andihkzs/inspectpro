@@ -45,7 +45,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/inspectpro.git
+git clone https://github.com/andihkzs/inspectpro.git
 cd inspectpro
 
 # Install dependencies

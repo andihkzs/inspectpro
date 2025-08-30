@@ -466,7 +466,7 @@ ${issueForm.browser}, ${issueForm.os}
     }
 
     // Create GitHub issue URL with pre-filled data
-    const githubUrl = `https://github.com/YOUR_USERNAME/inspectpro/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}&labels=${encodeURIComponent(labels)}`;
+    const githubUrl = `https://github.com/andihkzs/inspectpro/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}&labels=${encodeURIComponent(labels)}`;
     
     // Open GitHub in new tab
     window.open(githubUrl, '_blank');
