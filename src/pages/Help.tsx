@@ -643,6 +643,61 @@ ${issueForm.browser}, ${issueForm.os}
                   <p className="text-sm text-gray-600 mb-3">
                     Submit a detailed issue report to help us improve InspectPro.
                   </p>
+                  <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded">
+                    <p className="text-xs text-yellow-800">
+                      <strong>No GitHub account?</strong> It's free to create one at 
+                      <a href="https://github.com/signup" target="_blank" rel="noopener noreferrer" className="text-yellow-900 underline ml-1">
+                        github.com/signup
+                      </a>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Alternative: Copy to Clipboard */}
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <h4 className="text-sm font-medium text-gray-900 mb-2">Alternative: Copy Issue Details</h4>
+                  <p className="text-xs text-gray-600 mb-3">
+                    Don't want to create a GitHub account? Copy the formatted issue details to share via email or other channels.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      let issueText = '';
+                      if (issueForm.type === 'bug') {
+                        issueText = `BUG REPORT: ${issueForm.title}
+
+Description: ${issueForm.description}
+Browser: ${issueForm.browser}
+OS: ${issueForm.os}
+Steps: ${issueForm.steps}
+Expected: ${issueForm.expected}
+Actual: ${issueForm.actual}
+Priority: ${issueForm.priority}`;
+                      } else if (issueForm.type === 'feature') {
+                        issueText = `FEATURE REQUEST: ${issueForm.title}
+
+Description: ${issueForm.description}
+Use Case: ${issueForm.steps}
+Solution: ${issueForm.expected}
+Priority: ${issueForm.priority}`;
+                      } else {
+                        issueText = `QUESTION: ${issueForm.title}
+
+Details: ${issueForm.description}
+Context: ${issueForm.steps}
+Browser/OS: ${issueForm.browser}, ${issueForm.os}`;
+                      }
+                      
+                      navigator.clipboard.writeText(issueText).then(() => {
+                        alert('Issue details copied to clipboard! You can now paste this in an email or message.');
+                      }).catch(() => {
+                        alert('Could not copy to clipboard. Please manually copy the text after submitting.');
+                      });
+                    }}
+                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium"
+                  >
+                    📋 Copy Issue Details
+                  </button>
                   <button
                     onClick={() => setShowIssueForm(true)}
                     className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
