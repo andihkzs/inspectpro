@@ -12,7 +12,8 @@ import {
   RocketLaunchIcon,
   MagnifyingGlassIcon,
   ChevronRightIcon,
-  DocumentTextIcon
+  DocumentTextIcon,
+  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
 
 const Help: React.FC = () => {
