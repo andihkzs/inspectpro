@@ -7,7 +7,7 @@
 
 > Professional inspection form builder with AI-powered template generation for property management, construction, food service, and more.
 
-[**🚀 Live Demo**](https://inspection-form-buil-ulq6.bolt.host) | [**📖 Documentation**](https://inspection-form-buil-ulq6.bolt.host/help) | [**🐛 Report Issues**](https://github.com/yourusername/inspectpro/issues)
+[**🚀 Live Demo**](https://inspection-form-buil-ulq6.bolt.host) | [**📖 Documentation**](https://inspection-form-buil-ulq6.bolt.host/help)
 
 ## ✨ Features
 
@@ -45,7 +45,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/inspectpro.git
+git clone https://github.com/YOUR_USERNAME/inspectpro.git
 cd inspectpro
 
 # Install dependencies
@@ -187,7 +187,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ## 🐛 Bug Reports
 
-Found a bug? Please [create an issue](https://github.com/yourusername/inspectpro/issues) with:
+Found a bug? Please create an issue on GitHub with:
 
 - Browser and version
 - Steps to reproduce
@@ -219,8 +219,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 💬 Support
 
-- 📧 Email: support@inspectpro.dev
-- 💬 Discord: [Join our community](https://discord.gg/inspectpro)
+- 📧 Email: Create an issue on GitHub for support
 - 📚 Documentation: [Help Center](https://inspection-form-buil-ulq6.bolt.host/help)
 
 ---
