@@ -16,7 +16,7 @@ const App: React.FC = () => {
     <Router>
       <div className="min-h-screen bg-gray-50">
         <Navigation />
-        <main className="py-4">
+        <main>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
