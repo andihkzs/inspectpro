@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import FormDetailSidebar from '../components/Forms/FormDetailSidebar';
 import { formService } from '../services/formService';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { InspectionForm } from '../types';
@@ -23,6 +24,8 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [supabaseConnected, setSupabaseConnected] = useState(false);
+  const [selectedForm, setSelectedForm] = useState<InspectionForm | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     // Check Supabase connection status
@@ -57,6 +60,22 @@ const Dashboard: React.FC = () => {
       console.error('Error deleting form:', err);
       setError('Failed to delete form. Please try again.');
     }
+  };
+
+  const handleRowClick = (form: InspectionForm, e: React.MouseEvent) => {
+    // Don't trigger if clicking on action buttons
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('a')) {
+      return;
+    }
+    
+    setSelectedForm(form);
+    setSidebarOpen(true);
+  };
+
+  const handleCloseSidebar = () => {
+    setSidebarOpen(false);
+    setSelectedForm(null);
   };
 
   const formatDate = (date: Date) => {
@@ -159,7 +178,12 @@ const Dashboard: React.FC = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {forms.map((form) => (
-                <tr key={form.id} className="hover:bg-gray-50">
+                <tr 
+                  key={form.id} 
+                  className="hover:bg-blue-50 cursor-pointer transition-colors"
+                  onClick={(e) => handleRowClick(form, e)}
+                  title="Click to view form details"
+                >
                   <td className="px-4 sm:px-6 py-4">
                     <div>
                       <div className="text-sm font-medium text-gray-900 truncate max-w-xs sm:max-w-none">
@@ -211,14 +235,15 @@ const Dashboard: React.FC = () => {
                     <div className="flex items-center justify-end space-x-1">
                       <Link
                         to={`/forms/${form.id}/edit`}
-                        className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+                        className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-100 rounded-lg transition-colors"
                         title="Edit"
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <PencilIcon className="w-5 h-5 flex-shrink-0" />
                       </Link>
                       <button
                         onClick={() => handleDeleteForm(form.id)}
-                        className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 text-red-600 hover:text-red-800 hover:bg-red-100 rounded-lg transition-colors"
                         title="Delete"
                       >
                         <TrashIcon className="w-5 h-5 flex-shrink-0" />
@@ -237,6 +262,13 @@ const Dashboard: React.FC = () => {
         )}
         </div>
       </div>
+
+      {/* Form Detail Sidebar */}
+      <FormDetailSidebar
+        form={selectedForm}
+        isOpen={sidebarOpen}
+        onClose={handleCloseSidebar}
+      />
     </div>
   );
 };
