@@ -425,6 +425,21 @@ const forms = JSON.parse(localStorage.getItem('inspectionForms') || '[]');
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sticky top-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Topics</h3>
+              
+              {/* Quick Report Issue Button */}
+              <div className="mb-4 p-3 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-lg">
+                <button
+                  onClick={() => setShowIssueModal(true)}
+                  className="w-full flex items-center space-x-2 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                >
+                  <ExclamationTriangleIcon className="w-4 h-4" />
+                  <span>Report Issue</span>
+                </button>
+                <p className="text-xs text-red-600 mt-2 text-center">
+                  Found a bug or need help? Click here for structured issue templates.
+                </p>
+              </div>
+              
               <nav className="space-y-2">
                 {filteredSections.map((section) => {
                   const Icon = section.icon;
@@ -462,6 +477,17 @@ const forms = JSON.parse(localStorage.getItem('inspectionForms') || '[]');
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900">{activeContent.title}</h2>
                     <p className="text-gray-600">{activeContent.description}</p>
+                  </div>
+                  {/* Section-specific Report Issue Button */}
+                  <div className="ml-auto">
+                    <button
+                      onClick={() => setShowIssueModal(true)}
+                      className="flex items-center space-x-2 px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm"
+                      title="Report an issue with this topic"
+                    >
+                      <ExclamationTriangleIcon className="w-4 h-4" />
+                      <span>Report Issue</span>
+                    </button>
                   </div>
                 </div>
                 
@@ -515,6 +541,20 @@ const forms = JSON.parse(localStorage.getItem('inspectionForms') || '[]');
                   }} />
                 </div>
 
+                {/* Inline Help for Current Section */}
+                <div className="mt-8 bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <h4 className="font-medium text-gray-900 mb-2">Still having trouble with {activeContent.title.toLowerCase()}?</h4>
+                  <p className="text-sm text-gray-600 mb-3">
+                    Use our structured issue templates to get help quickly and effectively.
+                  </p>
+                  <button
+                    onClick={() => setShowIssueModal(true)}
+                    className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                  >
+                    <ExclamationTriangleIcon className="w-4 h-4" />
+                    <span>Open Issue Templates</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -525,17 +565,14 @@ const forms = JSON.parse(localStorage.getItem('inspectionForms') || '[]');
           <BookOpenIcon className="w-12 h-12 text-blue-600 mx-auto mb-4" />
           <h3 className="text-2xl font-bold text-gray-900 mb-2">Still Need Help?</h3>
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-            Can't find what you're looking for? Check out our community forums or contact support for personalized assistance.
+            Can't find what you're looking for? Use our structured issue templates to report bugs, request features, or ask questions.
           </p>
           <div className="flex justify-center space-x-4">
-            <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-              Contact Support
-            </button>
             <button 
               onClick={() => setShowIssueModal(true)}
-              className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
             >
-              Report Issue
+              🐛 Report Issue / Get Help
             </button>
           </div>
         </div>
