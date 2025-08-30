@@ -1,0 +1,145 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement for InspectPro
+title: "[Feature]: "
+labels: ["enhancement", "needs-review"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please provide as much detail as possible.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Prerequisites
+      description: Please confirm the following before submitting
+      options:
+        - label: I have searched existing issues to ensure this feature hasn't been requested
+          required: true
+        - label: This feature would benefit other users, not just my specific use case
+          required: true
+
+  - type: textarea
+    id: feature-summary
+    attributes:
+      label: Feature Summary
+      description: A clear and concise description of the feature you'd like to see
+      placeholder: Briefly describe the feature in 1-2 sentences
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-solving
+    attributes:
+      label: Problem or Use Case
+      description: What problem does this feature solve? What is your use case?
+      placeholder: |
+        Describe the problem you're trying to solve:
+        - As a [type of user], I want [goal] so that [benefit]
+        - Currently, I have to [current workaround]
+        - This would help me [specific benefit]
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Solution
+      description: Describe how you envision this feature working
+      placeholder: |
+        How should this feature work?
+        - User interface changes
+        - New functionality
+        - Integration points
+        - User workflow
+    validations:
+      required: true
+
+  - type: dropdown
+    id: feature-category
+    attributes:
+      label: Feature Category
+      description: Which area of the app does this feature relate to?
+      options:
+        - AI Form Generation
+        - Form Builder/Editor
+        - User Interface/Design
+        - Data Management
+        - Export/Import
+        - Mobile Experience
+        - Performance
+        - Integration
+        - Security
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: user-type
+    attributes:
+      label: User Type
+      description: What type of user would primarily benefit from this feature?
+      options:
+        - Property Managers
+        - Restaurant Owners/Managers
+        - Construction Supervisors
+        - Quality Inspectors
+        - General Users
+        - Developers/Integrators
+        - All Users
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative Solutions
+      description: Have you considered any alternative solutions or workarounds?
+      placeholder: |
+        - Alternative approach 1
+        - Alternative approach 2
+        - Current workarounds I'm using
+
+  - type: textarea
+    id: mockups
+    attributes:
+      label: Mockups or Examples
+      description: Visual examples, mockups, or references to similar features in other apps
+      placeholder: |
+        - Link to mockups/wireframes
+        - Screenshots from other apps
+        - Reference implementations
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - Low - Nice to have
+        - Medium - Would significantly improve my workflow
+        - High - Essential for my use case
+    validations:
+      required: true
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: Implementation Complexity (Your Guess)
+      description: How complex do you think this feature would be to implement?
+      options:
+        - Simple - Small UI change or setting
+        - Medium - New component or moderate functionality
+        - Complex - Major feature requiring significant changes
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context, links, or information about the feature request
+      placeholder: Any additional information that might be helpful

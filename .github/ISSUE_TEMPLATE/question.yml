@@ -1,0 +1,67 @@
+name: ❓ Question or Support
+description: Ask a question about using InspectPro
+title: "[Question]: "
+labels: ["question", "support"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your question! Please check our [Help Documentation](https://inspection-form-buil-ulq6.bolt.host/help) first.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Prerequisites
+      description: Please confirm the following before asking
+      options:
+        - label: I have checked the Help documentation
+          required: true
+        - label: I have searched existing issues for similar questions
+          required: true
+
+  - type: dropdown
+    id: question-category
+    attributes:
+      label: Question Category
+      description: What is your question about?
+      options:
+        - Getting Started
+        - AI Form Generation
+        - Form Builder Usage
+        - Technical Implementation
+        - Deployment/Hosting
+        - Integration with Other Tools
+        - Best Practices
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: Please be as specific as possible about what you're trying to achieve
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Additional context about your situation or use case
+      placeholder: |
+        - What are you trying to accomplish?
+        - What have you already tried?
+        - Any relevant details about your setup
+    validations:
+      required: true
+
+  - type: input
+    id: urgency
+    attributes:
+      label: Urgency
+      description: How urgent is this question?
+      placeholder: e.g., Blocking my work, Nice to know, Planning ahead
