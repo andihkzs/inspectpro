@@ -23,12 +23,65 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [supabaseConnected, setSupabaseConnected] = useState(false);
+  const [columnWidths, setColumnWidths] = useState({
+    name: 300,
+    industry: 150,
+    status: 120,
+    sections: 100,
+    fields: 100,
+    updated: 120,
+    actions: 100
+  });
+  const [isResizing, setIsResizing] = useState<string | null>(null);
+  const [startX, setStartX] = useState(0);
+  const [startWidth, setStartWidth] = useState(0);
 
   useEffect(() => {
     // Check Supabase connection status
     setSupabaseConnected(isSupabaseConfigured());
     loadForms();
   }, []);
+
+  const handleMouseDown = (e: React.MouseEvent, columnKey: string) => {
+    setIsResizing(columnKey);
+    setStartX(e.clientX);
+    setStartWidth(columnWidths[columnKey as keyof typeof columnWidths]);
+    e.preventDefault();
+  };
+
+  const handleMouseMove = React.useCallback((e: MouseEvent) => {
+    if (!isResizing) return;
+    
+    const diff = e.clientX - startX;
+    const newWidth = Math.max(80, startWidth + diff); // Minimum width of 80px
+    
+    setColumnWidths(prev => ({
+      ...prev,
+      [isResizing]: newWidth
+    }));
+  }, [isResizing, startX, startWidth]);
+
+  const handleMouseUp = React.useCallback(() => {
+    setIsResizing(null);
+    setStartX(0);
+    setStartWidth(0);
+  }, []);
+
+  React.useEffect(() => {
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+      
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      };
+    }
+  }, [isResizing, handleMouseMove, handleMouseUp]);
 
   const loadForms = async () => {
     try {
@@ -131,28 +184,79 @@ const Dashboard: React.FC = () => {
       <div className="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
         {forms.length > 0 ? (
-          <table className="min-w-full divide-y divide-gray-200">
+          <table className="min-w-full divide-y divide-gray-200" style={{ tableLayout: 'fixed' }}>
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th 
+                  className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider relative"
+                  style={{ width: `${columnWidths.name}px` }}
+                >
                   Form Name
+                  <div
+                    className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-200 transition-colors"
+                    onMouseDown={(e) => handleMouseDown(e, 'name')}
+                    title="Drag to resize column"
+                  />
                 </th>
-                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+                <th 
+                  className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell relative"
+                  style={{ width: `${columnWidths.industry}px` }}
+                >
                   Industry
+                  <div
+                    className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-200 transition-colors"
+                    onMouseDown={(e) => handleMouseDown(e, 'industry')}
+                    title="Drag to resize column"
+                  />
                 </th>
-                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th 
+                  className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider relative"
+                  style={{ width: `${columnWidths.status}px` }}
+                >
                   Status
+                  <div
+                    className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-200 transition-colors"
+                    onMouseDown={(e) => handleMouseDown(e, 'status')}
+                    title="Drag to resize column"
+                  />
                 </th>
-                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                <th 
+                  className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell relative"
+                  style={{ width: `${columnWidths.sections}px` }}
+                >
                   Sections
+                  <div
+                    className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-200 transition-colors"
+                    onMouseDown={(e) => handleMouseDown(e, 'sections')}
+                    title="Drag to resize column"
+                  />
                 </th>
-                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                <th 
+                  className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell relative"
+                  style={{ width: `${columnWidths.fields}px` }}
+                >
                   Fields
+                  <div
+                    className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-200 transition-colors"
+                    onMouseDown={(e) => handleMouseDown(e, 'fields')}
+                    title="Drag to resize column"
+                  />
                 </th>
-                <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
+                <th 
+                  className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell relative"
+                  style={{ width: `${columnWidths.updated}px` }}
+                >
                   Updated
+                  <div
+                    className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-200 transition-colors"
+                    onMouseDown={(e) => handleMouseDown(e, 'updated')}
+                    title="Drag to resize column"
+                  />
                 </th>
-                <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-20 sm:w-24">
+                <th 
+                  className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider relative"
+                  style={{ width: `${columnWidths.actions}px` }}
+                >
                   Actions
                 </th>
               </tr>
@@ -160,7 +264,7 @@ const Dashboard: React.FC = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {forms.map((form) => (
                 <tr key={form.id} className="hover:bg-gray-50">
-                  <td className="px-4 sm:px-6 py-4">
+                  <td className="px-4 sm:px-6 py-4" style={{ width: `${columnWidths.name}px` }}>
                     <div>
                       <div className="text-sm font-medium text-gray-900 truncate max-w-xs sm:max-w-none">
                         {form.title}
@@ -174,12 +278,12 @@ const Dashboard: React.FC = () => {
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell" style={{ width: `${columnWidths.industry}px` }}>
                     <span className="text-sm text-gray-900 capitalize">
                       {form.industry.replace('-', ' ')}
                     </span>
                   </td>
-                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap" style={{ width: `${columnWidths.status}px` }}>
                     <div className="flex items-center space-x-2">
                       {form.isPublished ? (
                         <>
@@ -198,16 +302,16 @@ const Dashboard: React.FC = () => {
                       )}
                     </div>
                   </td>
-                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell" style={{ width: `${columnWidths.sections}px` }}>
                     {form.sections.length}
                   </td>
-                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900 hidden md:table-cell" style={{ width: `${columnWidths.fields}px` }}>
                     {form.sections.reduce((acc, section) => acc + section.fields.length, 0)}
                   </td>
-                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell" style={{ width: `${columnWidths.updated}px` }}>
                     {formatDate(form.updatedAt)}
                   </td>
-                  <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium w-20 sm:w-24">
+                  <td className="px-2 py-4 whitespace-nowrap text-right text-sm font-medium" style={{ width: `${columnWidths.actions}px` }}>
                     <div className="flex items-center justify-end space-x-1">
                       <Link
                         to={`/forms/${form.id}/edit`}
