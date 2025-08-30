@@ -31,8 +31,6 @@ const FormDetailSidebar: React.FC<FormDetailSidebarProps> = ({ form, isOpen, onC
   );
   const [isResizing, setIsResizing] = useState(false);
 
-  if (!form) return null;
-
   const handleMouseDown = React.useCallback((e: React.MouseEvent) => {
     setIsResizing(true);
     e.preventDefault();
@@ -79,6 +77,8 @@ const FormDetailSidebar: React.FC<FormDetailSidebarProps> = ({ form, isOpen, onC
     window.addEventListener('resize', handleWindowResize);
     return () => window.removeEventListener('resize', handleWindowResize);
   }, []);
+
+  if (!form) return null;
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
