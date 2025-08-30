@@ -3,7 +3,7 @@
  * Shows comprehensive form details when a row is clicked
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { InspectionForm } from '../../types';
 import { 
   XMarkIcon,
