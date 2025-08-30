@@ -19,6 +19,18 @@ import {
 const Help: React.FC = () => {
   const [activeSection, setActiveSection] = useState('getting-started');
   const [searchTerm, setSearchTerm] = useState('');
+  const [showIssueForm, setShowIssueForm] = useState(false);
+  const [issueForm, setIssueForm] = useState({
+    type: 'bug',
+    title: '',
+    description: '',
+    browser: '',
+    os: '',
+    steps: '',
+    expected: '',
+    actual: '',
+    priority: 'medium'
+  });
 
   const sections = [
     {
@@ -387,6 +399,93 @@ const forms = JSON.parse(localStorage.getItem('inspectionForms') || '[]');
     }
   ];
 
+  const handleIssueSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    let issueBody = '';
+    let issueTitle = '';
+    let labels = '';
+
+    if (issueForm.type === 'bug') {
+      issueTitle = `[Bug]: ${issueForm.title}`;
+      labels = 'bug,needs-triage';
+      issueBody = `## Bug Description
+${issueForm.description}
+
+## Browser & Version
+${issueForm.browser}
+
+## Operating System
+${issueForm.os}
+
+## Steps to Reproduce
+${issueForm.steps}
+
+## Expected Behavior
+${issueForm.expected}
+
+## Actual Behavior
+${issueForm.actual}
+
+## Priority
+${issueForm.priority}
+
+---
+*This issue was created using InspectPro's help center form*`;
+    } else if (issueForm.type === 'feature') {
+      issueTitle = `[Feature]: ${issueForm.title}`;
+      labels = 'enhancement,needs-review';
+      issueBody = `## Feature Summary
+${issueForm.description}
+
+## Problem or Use Case
+${issueForm.steps}
+
+## Proposed Solution
+${issueForm.expected}
+
+## Priority
+${issueForm.priority}
+
+---
+*This feature request was created using InspectPro's help center form*`;
+    } else {
+      issueTitle = `[Question]: ${issueForm.title}`;
+      labels = 'question,support';
+      issueBody = `## Question
+${issueForm.description}
+
+## Context
+${issueForm.steps}
+
+## Browser & OS
+${issueForm.browser}, ${issueForm.os}
+
+---
+*This question was submitted using InspectPro's help center form*`;
+    }
+
+    // Create GitHub issue URL with pre-filled data
+    const githubUrl = `https://github.com/YOUR_USERNAME/inspectpro/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}&labels=${encodeURIComponent(labels)}`;
+    
+    // Open GitHub in new tab
+    window.open(githubUrl, '_blank');
+    
+    // Reset form
+    setIssueForm({
+      type: 'bug',
+      title: '',
+      description: '',
+      browser: '',
+      os: '',
+      steps: '',
+      expected: '',
+      actual: '',
+      priority: 'medium'
+    });
+    setShowIssueForm(false);
+  };
+
   const filteredSections = sections.filter(section =>
     section.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     section.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -423,6 +522,20 @@ const forms = JSON.parse(localStorage.getItem('inspectionForms') || '[]');
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sticky top-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Topics</h3>
+              
+              {/* Quick Report Issue Button */}
+              <div className="mb-4 p-3 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-lg">
+                <button
+                  onClick={() => setShowIssueForm(true)}
+                  className="w-full flex items-center space-x-2 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                >
+                  <ExclamationTriangleIcon className="w-4 h-4" />
+                  <span>Report Issue</span>
+                </button>
+                <p className="text-xs text-red-600 mt-2 text-center">
+                  Submit bugs, feature requests, or ask questions
+                </p>
+              </div>
               <nav className="space-y-2">
                 {filteredSections.map((section) => {
                   const Icon = section.icon;
@@ -460,6 +573,17 @@ const forms = JSON.parse(localStorage.getItem('inspectionForms') || '[]');
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900">{activeContent.title}</h2>
                     <p className="text-gray-600">{activeContent.description}</p>
+                  </div>
+                  {/* Section-specific Report Issue Button */}
+                  <div className="ml-auto">
+                    <button
+                      onClick={() => setShowIssueForm(true)}
+                      className="flex items-center space-x-2 px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors text-sm"
+                      title="Report an issue with this topic"
+                    >
+                      <ExclamationTriangleIcon className="w-4 h-4" />
+                      <span>Report Issue</span>
+                    </button>
                   </div>
                 </div>
                 
@@ -513,6 +637,20 @@ const forms = JSON.parse(localStorage.getItem('inspectionForms') || '[]');
                   }} />
                 </div>
 
+                {/* Inline Help for Current Section */}
+                <div className="mt-8 bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <h4 className="font-medium text-gray-900 mb-2">Having trouble with {activeContent.title.toLowerCase()}?</h4>
+                  <p className="text-sm text-gray-600 mb-3">
+                    Submit a detailed issue report to help us improve InspectPro.
+                  </p>
+                  <button
+                    onClick={() => setShowIssueForm(true)}
+                    className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                  >
+                    <ExclamationTriangleIcon className="w-4 h-4" />
+                    <span>Submit Issue Report</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -523,9 +661,256 @@ const forms = JSON.parse(localStorage.getItem('inspectionForms') || '[]');
           <BookOpenIcon className="w-12 h-12 text-blue-600 mx-auto mb-4" />
           <h3 className="text-2xl font-bold text-gray-900 mb-2">Still Need Help?</h3>
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-            Can't find what you're looking for? Check out our community resources or contact support for personalized assistance.
+            Can't find what you're looking for? Submit an issue report and we'll help you directly on GitHub.
           </p>
+          <button 
+            onClick={() => setShowIssueForm(true)}
+            className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+          >
+            🐛 Submit Issue Report
+          </button>
         </div>
+
+        {/* GitHub Issue Form Modal */}
+        {showIssueForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold text-gray-900">Submit Issue Report</h3>
+                  <button
+                    onClick={() => setShowIssueForm(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    ×
+                  </button>
+                </div>
+
+                <form onSubmit={handleIssueSubmit} className="space-y-6">
+                  {/* Issue Type */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Issue Type
+                    </label>
+                    <select
+                      value={issueForm.type}
+                      onChange={(e) => setIssueForm({...issueForm, type: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    >
+                      <option value="bug">🐛 Bug Report</option>
+                      <option value="feature">✨ Feature Request</option>
+                      <option value="question">❓ Question / Support</option>
+                    </select>
+                  </div>
+
+                  {/* Title */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {issueForm.type === 'bug' ? 'Bug Summary' : 
+                       issueForm.type === 'feature' ? 'Feature Title' : 'Question Title'}
+                    </label>
+                    <input
+                      type="text"
+                      value={issueForm.title}
+                      onChange={(e) => setIssueForm({...issueForm, title: e.target.value})}
+                      placeholder={
+                        issueForm.type === 'bug' ? 'Brief description of the bug' :
+                        issueForm.type === 'feature' ? 'Brief description of the feature' :
+                        'What do you need help with?'
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {issueForm.type === 'bug' ? 'Detailed Description' : 
+                       issueForm.type === 'feature' ? 'Feature Description' : 'Question Details'}
+                    </label>
+                    <textarea
+                      value={issueForm.description}
+                      onChange={(e) => setIssueForm({...issueForm, description: e.target.value})}
+                      placeholder={
+                        issueForm.type === 'bug' ? 'Describe what happened and what you expected to happen' :
+                        issueForm.type === 'feature' ? 'Describe the feature and how it would help you' :
+                        'Please provide details about your question'
+                      }
+                      rows={4}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                  </div>
+
+                  {/* Browser & OS */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Browser & Version
+                      </label>
+                      <input
+                        type="text"
+                        value={issueForm.browser}
+                        onChange={(e) => setIssueForm({...issueForm, browser: e.target.value})}
+                        placeholder="e.g., Chrome 120.0, Firefox 115.0"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Operating System
+                      </label>
+                      <input
+                        type="text"
+                        value={issueForm.os}
+                        onChange={(e) => setIssueForm({...issueForm, os: e.target.value})}
+                        placeholder="e.g., Windows 11, macOS 14.0"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Dynamic fields based on issue type */}
+                  {issueForm.type === 'bug' && (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Steps to Reproduce
+                        </label>
+                        <textarea
+                          value={issueForm.steps}
+                          onChange={(e) => setIssueForm({...issueForm, steps: e.target.value})}
+                          placeholder="1. Go to '...'&#10;2. Click on '...'&#10;3. See error"
+                          rows={3}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Expected Behavior
+                        </label>
+                        <textarea
+                          value={issueForm.expected}
+                          onChange={(e) => setIssueForm({...issueForm, expected: e.target.value})}
+                          placeholder="What should have happened?"
+                          rows={2}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Actual Behavior
+                        </label>
+                        <textarea
+                          value={issueForm.actual}
+                          onChange={(e) => setIssueForm({...issueForm, actual: e.target.value})}
+                          placeholder="What actually happened?"
+                          rows={2}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          required
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {issueForm.type === 'feature' && (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Problem or Use Case
+                        </label>
+                        <textarea
+                          value={issueForm.steps}
+                          onChange={(e) => setIssueForm({...issueForm, steps: e.target.value})}
+                          placeholder="What problem does this feature solve? How would you use it?"
+                          rows={3}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Proposed Solution
+                        </label>
+                        <textarea
+                          value={issueForm.expected}
+                          onChange={(e) => setIssueForm({...issueForm, expected: e.target.value})}
+                          placeholder="How should this feature work?"
+                          rows={3}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          required
+                        />
+                      </div>
+                    </>
+                  )}
+
+                  {issueForm.type === 'question' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Additional Context
+                      </label>
+                      <textarea
+                        value={issueForm.steps}
+                        onChange={(e) => setIssueForm({...issueForm, steps: e.target.value})}
+                        placeholder="What have you tried? What's your specific situation?"
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                  )}
+
+                  {/* Priority */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Priority
+                    </label>
+                    <select
+                      value={issueForm.priority}
+                      onChange={(e) => setIssueForm({...issueForm, priority: e.target.value})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="low">Low - Minor issue or nice to have</option>
+                      <option value="medium">Medium - Affects functionality</option>
+                      <option value="high">High - Major problem</option>
+                      <option value="critical">Critical - App unusable</option>
+                    </select>
+                  </div>
+
+                  {/* Submit Buttons */}
+                  <div className="flex items-center justify-end space-x-3 pt-4 border-t border-gray-200">
+                    <button
+                      type="button"
+                      onClick={() => setShowIssueForm(false)}
+                      className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                    >
+                      Create GitHub Issue
+                    </button>
+                  </div>
+
+                  <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-blue-800">
+                      <strong>How it works:</strong> This form will open GitHub in a new tab with your issue pre-filled. 
+                      You'll need a GitHub account to submit the issue.
+                    </p>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
