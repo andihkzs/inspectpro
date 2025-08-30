@@ -15,10 +15,12 @@ import {
   ChevronRightIcon,
   DocumentTextIcon
 } from '@heroicons/react/24/outline';
+import IssueReportModal from '../components/Forms/IssueReportModal';
 
 const Help: React.FC = () => {
   const [activeSection, setActiveSection] = useState('getting-started');
   const [searchTerm, setSearchTerm] = useState('');
+  const [showIssueModal, setShowIssueModal] = useState(false);
 
   const sections = [
     {
@@ -529,9 +531,21 @@ const forms = JSON.parse(localStorage.getItem('inspectionForms') || '[]');
             <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
               Contact Support
             </button>
+            <button 
+              onClick={() => setShowIssueModal(true)}
+              className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            >
+              Report Issue
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Issue Report Modal */}
+      <IssueReportModal 
+        isOpen={showIssueModal}
+        onClose={() => setShowIssueModal(false)}
+      />
     </div>
   );
 };
