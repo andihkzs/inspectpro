@@ -26,7 +26,59 @@ interface FormDetailSidebarProps {
 }
 
 const FormDetailSidebar: React.FC<FormDetailSidebarProps> = ({ form, isOpen, onClose }) => {
+  const [sidebarWidth, setSidebarWidth] = useState(() => 
+    Math.min(400, window.innerWidth * 0.3)
+  );
+  const [isResizing, setIsResizing] = useState(false);
+
   if (!form) return null;
+
+  const handleMouseDown = React.useCallback((e: React.MouseEvent) => {
+    setIsResizing(true);
+    e.preventDefault();
+  }, []);
+
+  const handleMouseMove = React.useCallback((e: MouseEvent) => {
+    if (!isResizing) return;
+    
+    const newWidth = window.innerWidth - e.clientX;
+    const minWidth = 300;
+    const maxWidth = Math.min(800, window.innerWidth * 0.8);
+    
+    setSidebarWidth(Math.max(minWidth, Math.min(maxWidth, newWidth)));
+  }, [isResizing]);
+
+  const handleMouseUp = React.useCallback(() => {
+    setIsResizing(false);
+  }, []);
+
+  React.useEffect(() => {
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+      
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      };
+    }
+  }, [isResizing, handleMouseMove, handleMouseUp]);
+
+  // Handle window resize
+  React.useEffect(() => {
+    const handleWindowResize = () => {
+      const maxWidth = Math.min(800, window.innerWidth * 0.8);
+      const minWidth = 300;
+      setSidebarWidth(prevWidth => Math.max(minWidth, Math.min(maxWidth, prevWidth)));
+    };
+
+    window.addEventListener('resize', handleWindowResize);
+    return () => window.removeEventListener('resize', handleWindowResize);
+  }, []);
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
@@ -51,9 +103,18 @@ const FormDetailSidebar: React.FC<FormDetailSidebarProps> = ({ form, isOpen, onC
       )}
 
       {/* Sidebar */}
-      <div className={`fixed top-0 right-0 h-full w-96 bg-white shadow-2xl border-l border-gray-200 transform transition-transform duration-300 ease-in-out z-50 ${
+      <div className={`fixed top-0 right-0 h-full bg-white shadow-2xl border-l border-gray-200 transform transition-transform duration-300 ease-in-out z-50 ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}>
+      }`} style={{ width: `${sidebarWidth}px` }}>
+        {/* Resize Handle */}
+        <div
+          className={`absolute top-0 left-0 w-1 h-full bg-transparent hover:bg-blue-200 cursor-col-resize z-10 transition-colors ${
+            isResizing ? 'bg-blue-300' : ''
+          }`}
+          onMouseDown={handleMouseDown}
+          title="Drag to resize sidebar"
+        />
+        
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="bg-blue-600 text-white p-6">
